@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>🌸 Cute Notepad with Markdown Preview 🌸</title>
+<style>
+  :root {
+    --pink: #ff6f91;
+    --pink-light: #ffd6e8;
+    --bg-light: #fff8fa;
+    --bg-dark: #1e1e2f;
+    --text-light: #333;
+    --text-dark: #eee;
+    --shadow-pink: rgba(255, 111, 145, 0.3);
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0; padding: 0;
+    background-color: var(--bg-light);
+    color: var(--text-light);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  body.dark {
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+  }
+  header {
+    background: var(--pink);
+    color: white;
+    text-align: center;
+    padding: 1em;
+    font-size: 1.5em;
+    font-weight: bold;
+    user-select: none;
+    box-shadow: 0 4px 10px var(--shadow-pink);
+  }
+  main {
+    flex: 1;
+    display: flex;
+    gap: 1em;
+    padding: 1em;
+    box-sizing: border-box;
+  }
+  textarea {
+    flex: 1;
+    font-size: 1.1em;
+    padding: 1em;
+    border: 3px solid var(--pink);
+    border-radius: 12px;
+    background: var(--bg-light);
+    color: var(--text-light);
+    resize: none;
+    box-shadow: 0 5px 15px var(--shadow-pink);
+    transition: background-color 0.3s, color 0.3s;
+    font-family: 'Segoe UI Mono', monospace;
+    min-height: 70vh;
+  }
+  body.dark textarea {
+    background: #2b2b44;
+    color: var(--text-dark);
+  }
+  #preview {
+    flex: 1;
+    padding: 1em;
+    border: 3px solid var(--pink);
+    border-radius: 12px;
+    background: var(--bg-light);
+    box-shadow: 0 5px 15px var(--shadow-pink);
+    overflow-y: auto;
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 70vh;
+  }
+  body.dark #preview {
+    background: #2b2b44;
+    color: var(--text-dark);
+  }
+  footer {
+    padding: 0.5em 1em;
+    background: var(--pink-light);
+    text-align: center;
+    font-size: 0.9em;
+    font-weight: bold;
+    user-select: none;
+    box-shadow: 0 -4px 10px var(--shadow-pink);
+  }
+  button {
+    background: var(--pink);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    padding: 0.5em 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-left: 10px;
+  }
+  button:hover {
+    background: #ff4f78;
+  }
+  #controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.8em;
+  }
+</style>
+</head>
+<body>
+<header>
+  🌸 Cute Notepad 🌸
+</header>
+<main>
+  <textarea id="notepad" placeholder="Write your notes here... Supports **Markdown**!"></textarea>
+  <div id="preview"></div>
+</main>
+<div id="controls">
+  <button id="clearBtn">Clear Notes</button>
+  <button id="toggleModeBtn">Dark Mode</button>
+</div>
+<footer>Made with ❤️ by jarso</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+  const textarea = document.getElementById('notepad');
+  const preview = document.getElementById('preview');
+  const clearBtn = document.getElementById('clearBtn');
+  const toggleModeBtn = document.getElementById('toggleModeBtn');
+  const body = document.body;
+
+  // Load saved notes and theme
+  textarea.value = localStorage.getItem('cuteNote') || '';
+  preview.innerHTML = marked.parse(textarea.value);
+
+  if(localStorage.getItem('cuteNoteTheme') === 'dark') {
+    body.classList.add('dark');
+    toggleModeBtn.textContent = 'Light Mode';
+  }
+
+  // Save on input + update preview
+  textarea.addEventListener('input', () => {
+    const content = textarea.value;
+    localStorage.setItem('cuteNote', content);
+    preview.innerHTML = marked.parse(content);
+  });
+
+  // Clear notes button
+  clearBtn.addEventListener('click', () => {
+    if (confirm('Are you sure you want to clear all notes?')) {
+      textarea.value = '';
+      preview.innerHTML = '';
+      localStorage.removeItem('cuteNote');
+    }
+  });
+
+  // Dark/Light mode toggle
+  toggleModeBtn.addEventListener('click', () => {
+    body.classList.toggle('dark');
+    if (body.classList.contains('dark')) {
+      localStorage.setItem('cuteNoteTheme', 'dark');
+      toggleModeBtn.textContent = 'Light Mode';
+    } else {
+      localStorage.setItem('cuteNoteTheme', 'light');
+      toggleModeBtn.textContent = 'Dark Mode';
+    }
+  });
+</script>
+</body>
+</html>
